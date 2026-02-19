@@ -52,4 +52,5 @@ if [ ! -f "$LAUNCHER_EXE" ]; then
 fi
 
 echo "Starting MnM Launcher..."
+cd "$APPDIR"
 $WINE "$LAUNCHER_EXE"
