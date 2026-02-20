@@ -3,7 +3,7 @@
 #export DXVK_HUD=memory,gpuload,api,version,fps
 export WINEDEBUG=-all
 #export DXVK_LOG_LEVEL=info
-#export DXVK_LOG_PATH=/home/trite/mnm/dxvk.log
+#export DXVK_LOG_PATH=$HOME/dxvk.log
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
