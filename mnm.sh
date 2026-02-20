@@ -2,6 +2,8 @@
 
 #export DXVK_HUD=memory,gpuload,api,version,fps
 export WINEDEBUG=-all
+#export DXVK_LOG_LEVEL=info
+#export DXVK_LOG_PATH=/home/trite/mnm/dxvk.log
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
@@ -27,6 +29,24 @@ if [ ! -f "${WINEPREFIX}/.tricks_installed" ]; then
     echo "Installing winetricks components..."
     WINE=$WINE winetricks -q vcrun2022 corefonts
     touch "${WINEPREFIX}/.tricks_installed"
+fi
+
+# DXVK
+if [ ! -f "${WINEPREFIX}/.dxvk_installed" ]; then
+    echo "Installing DXVK..."
+    DXVK_VERSION="2.4"
+    curl -L "https://github.com/doitsujin/dxvk/releases/download/v${DXVK_VERSION}/dxvk-${DXVK_VERSION}.tar.gz" \
+        -o "${SCRIPT_DIR}/dxvk.tar.gz"
+    tar -xf "${SCRIPT_DIR}/dxvk.tar.gz" -C "${SCRIPT_DIR}"
+    cp "${SCRIPT_DIR}/dxvk-${DXVK_VERSION}/x64/"*.dll "$SYSDIR/"
+    WINE=$WINE WINEPREFIX=$WINEPREFIX $WINE reg add \
+        "HKEY_CURRENT_USER\Software\Wine\DllOverrides" \
+        /v d3d11 /t REG_SZ /d native /f
+    WINE=$WINE WINEPREFIX=$WINEPREFIX $WINE reg add \
+        "HKEY_CURRENT_USER\Software\Wine\DllOverrides" \
+        /v dxgi /t REG_SZ /d native /f
+    rm -rf "${SCRIPT_DIR}/dxvk.tar.gz" "${SCRIPT_DIR}/dxvk-${DXVK_VERSION}"
+    touch "${WINEPREFIX}/.dxvk_installed"
 fi
 
 # ICU DLLs
